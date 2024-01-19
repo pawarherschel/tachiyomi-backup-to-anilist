@@ -1,5 +1,7 @@
 use tachiyomi::backup;
 
+pub mod anilist;
+
 pub mod tachiyomi {
     pub mod backup {
         include!(concat!(env!("OUT_DIR"), "/tachiyomi.backup.rs"));
