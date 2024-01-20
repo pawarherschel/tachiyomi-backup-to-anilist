@@ -19,6 +19,9 @@ anime = { path = "anup/anime" }
 #fubuki = { path = "fubuki" }
 webbrowser = "0.8.12"
 url = "2.5.0"
+serde = { version = "1.0.195", features = ["derive"] }
+indicatif = "0.17.7"
+ron = "0.8.1"
 
 [build-dependencies]
 prost-build = "0.12.3"

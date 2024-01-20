@@ -2,3 +2,5 @@
 /assets/
 /.idea
 !/assets/schema.proto
+/yoinked.py
+/temp
