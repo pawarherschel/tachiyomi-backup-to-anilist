@@ -50,6 +50,7 @@ pub fn get_code() -> String {
 }
 
 pub fn get_token(code: String) -> String {
+    #[allow(unused_variables)]
     let uri = "https://anilist.co/api/v2/oauth/token";
     let client_id = fs::read_to_string("assets/api-id").unwrap();
     let client_secret = fs::read_to_string("assets/api-secret").unwrap();
@@ -70,7 +71,7 @@ pub fn get_token(code: String) -> String {
         Ok(r) => r,
         Err(e) => match e {
             Error::Status(s, r) => {
-                panic!("{}", r.into_json::<Value>().unwrap())
+                panic!("{}: {}", s, r.into_json::<Value>().unwrap())
             }
             Error::Transport(e) => {
                 panic!("{e}")

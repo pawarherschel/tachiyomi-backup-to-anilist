@@ -4,7 +4,6 @@
 
 use std::collections::{BTreeSet, HashMap};
 use std::fs;
-use std::hash::BuildHasher;
 use std::io::Read;
 use std::thread::sleep;
 use std::time::{Duration, Instant};
@@ -16,7 +15,7 @@ use ureq::serde_json::Value;
 use ureq::{json, Error, Response};
 
 use tachiyomi_backup_to_anilist::anilist::{get_code, get_token};
-use tachiyomi_backup_to_anilist::responses::{Format, Medum, Root};
+use tachiyomi_backup_to_anilist::responses::{Format, Medum, Root, Title};
 use tachiyomi_backup_to_anilist::tachiyomi_backup::Backup;
 use tachiyomi_backup_to_anilist::{get_pb, time_it, write_items_to_file};
 
@@ -209,13 +208,26 @@ pub fn find_id(name: &str, media: &[Medum]) -> Option<u64> {
         .filter(|it| matches!(it.format, Format::Manga))
         .collect::<Vec<_>>();
 
-    let name = Some(name.to_owned());
-
     let found = list.iter().find(|it| {
-        name == it.title.romaji
-            || name == it.title.english
-            || name == it.title.native
-            || name == Some(it.title.user_preferred.clone())
+        let Title {
+            english,
+            native,
+            romaji,
+            user_preferred,
+        } = it.title.clone();
+
+        let english = english.unwrap_or_default();
+        let native = native.unwrap_or_default();
+        let romaji = romaji.unwrap_or_default();
+        // #[allow(clippy::redundant_locals)]
+        // let user_preferred = user_preferred;
+
+        // let (english, _, _) = remove_accents(english.unwrap_or_default());
+        // let (native, _, _) = remove_accents(native.unwrap_or_default());
+        // let (romaji, _, _) = remove_accents(romaji.unwrap_or_default());
+        // let (user_preferred, _, _) = remove_accents(user_preferred);
+
+        name == english || name == native || name == romaji || name == user_preferred
     });
 
     found.map(|m| m.id)
